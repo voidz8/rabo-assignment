@@ -15,8 +15,8 @@ This is a Kotlin + Spring Boot application that reads customer statement records
 ## **How to Run**
 
 ### **Prerequisites**
-- JDK 17+ installed
-- Maven or Gradle installed
+- JDK 21 installed
+- Maven
 
 ### **Run the application**
 
@@ -41,3 +41,14 @@ Run all tests with:
 ```bash
 ./mvnw test
 ```
+
+## Assumptions
+1. Description fields are allowed to be empty.
+2. Input files are currently loaded from the classpath.
+
+## Design Choices
+1. Invalid records are logged; only valid records are returned.
+2. XML and CSV are processed together to catch cross-file duplicates.
+3. Reference uniqueness is checked across all loaded records.
+4. End balance validation is strict: `startBalance + mutation == endBalance`.
+5. Files are named via application properties.

@@ -4,6 +4,7 @@ import com.rabobank.rabobankassignment.model.SwiftRecord
 import com.rabobank.rabobankassignment.reader.SwiftRecordReader
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import kotlin.math.abs
 
 @Service
 class RecordValidator(private val recordReaders: List<SwiftRecordReader>) {
@@ -15,7 +16,7 @@ class RecordValidator(private val recordReaders: List<SwiftRecordReader>) {
 
         return swiftRecords.filter { record ->
             val isDuplicate = !checkedReferences.add(record.reference)
-            val isEndBalanceIncorrect = record.endBalance != record.startBalance + record.mutation
+            val isEndBalanceIncorrect = abs(record.endBalance - (record.startBalance + record.mutation)) > 0.01
 
             if (isDuplicate) {
                 logger.warn("Duplicate reference found: ${record.reference}")

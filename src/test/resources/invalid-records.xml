@@ -1,0 +1,14 @@
+<records>
+    <record reference="138932">
+        <accountNumber>NL90ABNA0585647886</accountNumber>
+        <startBalance>20</startBalance>
+        <mutation>+14.63</mutation>
+        <endBalance>34.63</endBalance>
+    </record>
+    <record reference="131254">
+        <accountNumber>NL93ABNA0585619023</accountNumber>
+        <description>Candy from Vincent de Vries</description>
+        <startBalance>12</startBalance>
+        <mutation>-10</mutation>
+    </record>
+</records>
