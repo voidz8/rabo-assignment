@@ -13,10 +13,10 @@ class ValidationIntegrationTest @Autowired constructor(
 
     @Test
     fun shouldReadAndValidateRecords() {
-        val validRecords = recordValidator.validateRecords()
+        val records = recordValidator.validateRecords()
 
-        assertTrue(validRecords.isNotEmpty())
-        assertTrue(validRecords.none { it.reference == "183398" })
-        assertTrue(validRecords.any { it.reference == "138932" })
+        assertTrue(records.validRecords.isNotEmpty())
+        assertTrue(records.validRecords.none { it.reference == "183398" })
+        assertTrue(records.validRecords.any { it.reference == "138932" })
     }
 }

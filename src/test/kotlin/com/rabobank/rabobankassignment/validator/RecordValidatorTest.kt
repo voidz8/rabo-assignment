@@ -3,11 +3,10 @@ package com.rabobank.rabobankassignment.validator
 import com.rabobank.rabobankassignment.model.SwiftRecord
 import com.rabobank.rabobankassignment.reader.SwiftRecordReader
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class RecordValidatorTest {
-
-
     @Test
     fun shouldFilterAndValidateRecords() {
         val fakeReader = object : SwiftRecordReader {
@@ -20,9 +19,11 @@ class RecordValidatorTest {
 
         val validator = RecordValidator(listOf(fakeReader))
 
-        val validRecords = validator.validateRecords()
+        val records = validator.validateRecords()
 
-        assertEquals(1, validRecords.size)
-        assertEquals("ref1", validRecords[0].reference)
+        assertTrue(records.validRecords.isNotEmpty())
+        assertTrue(records.invalidRecords.isNotEmpty())
+        assertEquals("ref1", records.validRecords[0].reference)
+        assertEquals("ref1", records.invalidRecords[0].reference)
     }
 }

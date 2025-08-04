@@ -29,4 +29,13 @@ class XmlReaderTest {
         assertEquals(1, records.size)
         assertEquals("138932", records[0].reference)
     }
+    @Test
+    fun shouldReadAndValidateEmptyXml() {
+        val props = AppProperties().apply { xmlFile = "empty.xml" }
+        val reader = XmlReader(props)
+
+        val records = reader.readSwiftRecords()
+
+        assertTrue(records.isEmpty())
+    }
 }

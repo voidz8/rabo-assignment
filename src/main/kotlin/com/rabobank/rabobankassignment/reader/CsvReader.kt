@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class CsvReader(private val props: AppProperties) : SwiftRecordReader {
 
-    private val logger = LoggerFactory.getLogger(CsvReader::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun readSwiftRecords(): List<SwiftRecord> {
         val resource = ClassPathResource("/${props.csvFile}")

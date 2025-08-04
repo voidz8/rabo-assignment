@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 @Service
 class XmlReader(private val props: AppProperties) : SwiftRecordReader {
 
-    private val logger = LoggerFactory.getLogger(XmlReader::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun readSwiftRecords(): List<SwiftRecord> {
         val records = mutableListOf<SwiftRecord>()
@@ -20,7 +20,14 @@ class XmlReader(private val props: AppProperties) : SwiftRecordReader {
 
         val documentBuilderFactory = DocumentBuilderFactory.newInstance()
         val documentBuilder = documentBuilderFactory.newDocumentBuilder()
-        val document = documentBuilder.parse(ClassPathResource("/${props.xmlFile}").inputStream)
+        val inputStream = ClassPathResource("/${props.xmlFile}").inputStream
+
+        if (inputStream.available() == 0) {
+            logger.warn("XML file is empty.")
+            return emptyList()
+        }
+
+        val document = documentBuilder.parse(inputStream)
 
         document.documentElement.normalize()
         val nodeList = document.getElementsByTagName("record")
@@ -30,43 +37,49 @@ class XmlReader(private val props: AppProperties) : SwiftRecordReader {
         for (i in 0 until nodeList.length) {
             val node = nodeList.item(i)
             if (node.nodeType == Node.ELEMENT_NODE) {
-                val element = node as Element
-
-                try {
-                    val reference = element.getAttribute("reference")
-                    val accountNumber = getContentOrNull(element, "accountNumber")
-                    val description = getContentOrNull(element, "description") ?: ""
-                    val startBalance = getContentOrNull(element, "startBalance")?.toDoubleOrNull()
-                    val mutation = getContentOrNull(element, "mutation")?.toDoubleOrNull()
-                    val endBalance = getContentOrNull(element, "endBalance")?.toDoubleOrNull()
-
-                    if (reference.isBlank() || accountNumber == null || startBalance == null || mutation == null || endBalance == null) {
-                        logger.warn("Skipping malformed XML record: reference=$reference, accountNumber=$accountNumber, startBalance=$startBalance, mutation=$mutation, endBalance=$endBalance")
-                        continue
-                    }
-
-                    val swiftRecord = SwiftRecord(
-                        reference,
-                        accountNumber,
-                        description,
-                        startBalance,
-                        mutation,
-                        endBalance
-                    )
-                    records.add(swiftRecord)
-
-                } catch (ex: Exception) {
-                    logger.warn("Skipping malformed XML record due to exception", ex)
-                }
+                parseRecord(node as Element)?.let { records.add(it) }
             }
         }
         logger.info("Successfully read ${records.size} valid records from XML.")
         return records
     }
 
+    private fun parseRecord(element: Element): SwiftRecord? {
+        val reference = element.getAttribute("reference").trim()
+        val accountNumber = getContentOrNull(element, "accountNumber")
+        val description = getContentOrNull(element, "description") ?: ""
+        val startBalance = getDoubleOrNull(element, "startBalance")
+        val mutation = getDoubleOrNull(element, "mutation")
+        val endBalance = getDoubleOrNull(element, "endBalance")
+
+        return if (
+            reference.isBlank() ||
+            accountNumber == null ||
+            startBalance == null ||
+            mutation == null ||
+            endBalance == null
+        ) {
+            logger.warn("Skipping malformed XML record: reference=$reference, accountNumber=$accountNumber, startBalance=$startBalance, mutation=$mutation, endBalance=$endBalance")
+            null
+        } else {
+            SwiftRecord(reference, accountNumber, description, startBalance, mutation, endBalance)
+        }
+    }
+
     private fun getContentOrNull(element: Element, tagName: String): String? {
         val nodeList = element.getElementsByTagName(tagName)
+        if (nodeList.length == 0) return null
+
         val node = nodeList.item(0) ?: return null
-        return node.textContent
+        val content = node.textContent?.trim()
+
+        if (content.isNullOrBlank()) {
+            return null
+        }
+        return content
     }
+
+
+    private fun getDoubleOrNull(element: Element, tagName: String): Double? =
+        getContentOrNull(element, tagName)?.toDoubleOrNull()
 }

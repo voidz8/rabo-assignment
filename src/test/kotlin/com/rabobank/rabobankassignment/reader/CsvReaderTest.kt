@@ -30,4 +30,14 @@ class CsvReaderTest {
         assertTrue(records.isEmpty(), "CSV should not contain records")
         assertEquals(0, records.size)
     }
+    @Test
+    fun shouldReadAndValidateEmptyCsv() {
+        val props = AppProperties().apply { csvFile = "empty.csv" }
+        val reader = CsvReader(props)
+
+        val records = reader.readSwiftRecords()
+
+        assertTrue(records.isEmpty(), "CSV should not contain records")
+        assertEquals(0, records.size)
+    }
 }
