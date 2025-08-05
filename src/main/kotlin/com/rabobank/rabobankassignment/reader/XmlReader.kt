@@ -27,7 +27,7 @@ class XmlReader(private val props: AppProperties) : SwiftRecordReader {
             return emptyList()
         }
 
-        val document = documentBuilder.parse(inputStream)
+        val document = documentBuilder.parse(inputStream) // TODO:  Should we not stream this instead of loading the whole file into memory? Maybe be use one of the streaming instead?
 
         document.documentElement.normalize()
         val nodeList = document.getElementsByTagName("record")

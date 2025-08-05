@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-@EnableConfigurationProperties(AppProperties::class)
+@EnableConfigurationProperties(AppProperties::class) // TODO: this can be a @ConfigurationPropertiesScan
 class RabobankAssignmentApplication
 
 fun main(args: Array<String>) {

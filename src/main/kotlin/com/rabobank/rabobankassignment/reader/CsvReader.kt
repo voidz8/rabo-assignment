@@ -7,10 +7,11 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 
 @Service
-class CsvReader(private val props: AppProperties) : SwiftRecordReader {
+class CsvReader(private val props: AppProperties) : SwiftRecordReader { // TODO: Why is this bean a service and not a component?
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    //TODO add javadoc
     override fun readSwiftRecords(): List<SwiftRecord> {
         val resource = ClassPathResource("/${props.csvFile}")
         logger.info("Reading Swift records from CSV...")
@@ -18,7 +19,7 @@ class CsvReader(private val props: AppProperties) : SwiftRecordReader {
         return resource.inputStream.bufferedReader().useLines { lines ->
             lines.drop(1) // drop the headers
                 .mapNotNull { line ->
-                    val columns = line.split(",")
+                    val columns = line.split(",") // TODO: Should we use a CSV parser library instead to handle edge cases like commas in fields, quoted strings, etc.? Jackson CSV, Apache Commons CSV, etc.?
 
                     if (columns.size < 6 || listOf(columns[0], columns[1], columns[3], columns[4], columns[5]).any { it.isBlank() }) {
                         logger.warn("Skipping malformed line $line")
@@ -38,7 +39,7 @@ class CsvReader(private val props: AppProperties) : SwiftRecordReader {
                         logger.warn("Skipping malformed line (invalid number): $line", e)
                         null
                     }
-                }.toList()
+                }.toList() // TODO: Should we use a sequence instead to avoid loading everything into memory at once?
         }
     }
 }

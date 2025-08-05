@@ -13,7 +13,7 @@ class RecordValidator(private val recordReaders: List<SwiftRecordReader>) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun validateRecords(): ValidationResult {
-        val allRecords = recordReaders.flatMap { it.readSwiftRecords() }
+        val allRecords = recordReaders.flatMap { it.readSwiftRecords() } // TODO: What if the files are very large? Should we not stream them instead?
         val seenReferences = mutableSetOf<String>()
 
         val validRecords = mutableListOf<SwiftRecord>()

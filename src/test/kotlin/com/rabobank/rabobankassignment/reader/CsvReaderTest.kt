@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 
 class CsvReaderTest {
 
+    //TODO: use spring boot test to load the application context and use the properties from the application.yaml file. Name the properties file as application-test.yaml
 
     @Test
     fun shouldParseRecordsFromCsVFile() {
@@ -40,4 +41,6 @@ class CsvReaderTest {
         assertTrue(records.isEmpty(), "CSV should not contain records")
         assertEquals(0, records.size)
     }
+
+    // TODO: Add more tests for edge cases, such as malformed lines, missing fields, missing headers, file not found, etc.
 }

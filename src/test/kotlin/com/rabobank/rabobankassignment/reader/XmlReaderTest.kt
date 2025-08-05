@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class XmlReaderTest {
+
+    //TODO: use spring boot test to load the application context and use the properties from the application.yaml file.
+
     private val props = AppProperties().apply { xmlFile = "records.xml" }
     private val reader = XmlReader(props)
 
@@ -38,4 +41,6 @@ class XmlReaderTest {
 
         assertTrue(records.isEmpty())
     }
+
+    //TODO: Add more tests for edge cases, such as malformed lines, missing fields, missing headers, file not found, etc.
 }
