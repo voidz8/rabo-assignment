@@ -13,4 +13,11 @@
         <mutation>-10</mutation>
         <endBalance>2</endBalance>
     </record>
+    <record reference="137569">
+        <accountNumber>NL01RABO9876543210</accountNumber>
+        <description>Tea from Karel de Groot</description>
+        <startBalance>50.0</startBalance>
+        <mutation>+5.0</mutation>
+        <endBalance>55.0</endBalance>
+    </record>
 </records>

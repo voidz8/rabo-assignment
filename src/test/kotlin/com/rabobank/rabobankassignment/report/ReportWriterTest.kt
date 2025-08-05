@@ -8,8 +8,6 @@ import java.nio.file.Path
 
 class ReportWriterTest {
 
-    private val reportWriter = ReportWriter()
-
     @Test
     fun shouldWriteInvalidRecordsToCSV(@TempDir tempDir: Path) {
         val testFile = tempDir.resolve("errors.csv").toFile()
@@ -19,7 +17,7 @@ class ReportWriterTest {
             InvalidRecord("67890", setOf("End balance incorrect", "Duplicate reference"))
         )
 
-        reportWriter.writeErrorReport(invalidRecords, testFile.absolutePath)
+        ReportWriter.writeErrorReport(invalidRecords, testFile.absolutePath)
 
         val lines = testFile.readLines()
         assertEquals(3, lines.size)
