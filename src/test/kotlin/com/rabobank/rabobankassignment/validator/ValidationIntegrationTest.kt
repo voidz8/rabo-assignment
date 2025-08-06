@@ -1,5 +1,6 @@
 package com.rabobank.rabobankassignment.validator
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +16,8 @@ class ValidationIntegrationTest @Autowired constructor(
     fun shouldReadAndValidateRecords() {
         val records = recordValidator.validateRecords()
 
+        assertTrue(records.invalidRecords.isNotEmpty())
+        assertEquals("137569", records.invalidRecords[1].reference)
         assertTrue(records.validRecords.isNotEmpty())
         assertTrue(records.validRecords.none { it.reference == "183398" })
         assertTrue(records.validRecords.any { it.reference == "138932" })

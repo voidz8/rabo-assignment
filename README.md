@@ -12,7 +12,9 @@ This is a Kotlin + Spring Boot application that reads customer statement records
   2. Verifies **end balance correctness** (`startBalance + mutation == endBalance` with max 0.01 tolerance).
 - Logs all **invalid records** with specific error reasons (e.g. duplicate, incorrect balance).
 - Generates a report `errors.csv` with all invalid records (reference + reasons).
-- Returns a list of valid records for further processing or integration.
+- Returns two list of records(valid and invalid) for further processing or integration.
+- CSV files are processed using Apache Commons CSV for reliable and efficient parsing.
+- XML files are processed using StAX (Streaming API for XML) to enable memory-efficient, stream-based parsing.
 
 ---
 
@@ -91,3 +93,4 @@ Run all tests with:
 4. Reference uniqueness is validated across all input records.
 5. End balance validation is strict: startBalance + mutation == endBalance with a tolerance of 0.01.
 6. Input filenames for CSV and XML are configurable via application.yaml.
+7. CSV files are parsed using Apache Commons CSV, XML files are parsed using StAX (Streaming API for XML) for efficient stream-based processing.

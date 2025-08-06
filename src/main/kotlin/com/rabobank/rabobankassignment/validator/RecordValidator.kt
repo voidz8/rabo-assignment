@@ -13,28 +13,28 @@ class RecordValidator(private val recordReaders: List<SwiftRecordReader>) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun validateRecords(): ValidationResult {
-        val allRecords = recordReaders.flatMap { it.readSwiftRecords() }
         val seenReferences = mutableSetOf<String>()
-
         val validRecords = mutableListOf<SwiftRecord>()
         val invalidRecords = mutableListOf<InvalidRecord>()
 
-        for (record in allRecords) {
-            val errors = mutableSetOf<String>()
+        for (reader in recordReaders) {
+            reader.readSwiftRecords().forEach { record ->
+                val errors = mutableSetOf<String>()
 
-            if (!seenReferences.add(record.reference)) {
-                errors.add("Duplicate reference")
-            }
+                if (!seenReferences.add(record.reference)) {
+                    errors.add("Duplicate reference")
+                }
 
-            if (abs(record.endBalance - (record.startBalance + record.mutation)) > 0.01) {
-                errors.add("End balance incorrect")
-            }
+                if (abs(record.endBalance - (record.startBalance + record.mutation)) > 0.01) {
+                    errors.add("End balance incorrect")
+                }
 
-            if (errors.isEmpty()) {
-                validRecords.add(record)
-            } else {
-                logger.warn("Invalid record: reference=${record.reference}, reasons=$errors")
-                invalidRecords.add(InvalidRecord(record.reference, errors))
+                if (errors.isEmpty()) {
+                    validRecords.add(record)
+                } else {
+                    logger.warn("Invalid record: reference=${record.reference}, reasons=$errors")
+                    invalidRecords.add(InvalidRecord(record.reference, errors))
+                }
             }
         }
 
